@@ -1,7 +1,3 @@
-# Auto detect text files and perform LF normalization
-* text=auto
-
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -112,7 +108,7 @@
       <select id="category" required>
         <option value="زعتر (خلط وتجهيز)">زعتر (خلط وتجهيز)</option>
         <option value="بهارات (طحن وتوليف)">بهارات (طحن وتوليف)</option>
-        <option value="بقوليات ومجففا (فرز وتعبئة)">بقوليات ومجففات (فرز وتعبئة)</option>
+        <option value="بقوليات ومجففات (فرز وتعبئة)">بقوليات ومجففات (فرز وتعبئة)</option>
       </select>
 
       <label>تفاصيل الصنف</label>
