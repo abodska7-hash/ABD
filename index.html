@@ -1,235 +1,318 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>نظام إدارة طلبيات المعمل والإنتاج</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>نظام إدارة طلبيات الإنتاج</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary: #1e3a8a;
-      --secondary: #0284c7;
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --text: #1e293b;
-      --border: #cbd5e1;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --success: #10b981;
-    }
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 15px;
-    }
-    .header-bar {
-      background: var(--primary);
-      color: white;
-      padding: 15px 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .grid { display: grid; grid-template-columns: 360px 1fr; gap: 20px; }
-    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 18px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    h3 { margin-top: 0; color: var(--primary); font-size: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }
-    label { display: block; font-size: 12.5px; font-weight: bold; margin: 8px 0 4px; color: #475569; }
-    input, select, textarea {
-      width: 100%;
-      padding: 9px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      box-sizing: border-box;
-      font-size: 13.5px;
-    }
-    button {
-      width: 100%;
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 11px;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    button:hover { opacity: 0.95; }
-
-    table { width: 100%; border-collapse: collapse; text-align: right; }
-    th, td { padding: 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
-    th { background: #f1f5f9; color: #334155; }
-
-    .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; }
-    .st-commercial { background: #e0f2fe; color: #0369a1; }
-    .st-production { background: #fef3c7; color: #b45309; }
-    .st-packaging { background: #f3e8ff; color: #7e22ce; }
-    .st-done { background: #dcfce7; color: #15803d; }
-    .shortage-tag { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; padding: 2px 6px; border-radius: 4px; font-size: 11px; }
-
-    .btn-step { background: #0284c7; padding: 5px 8px; font-size: 11.5px; border-radius: 4px; color: white; border: none; cursor: pointer; margin: 2px; width: auto; }
-    .btn-shortage { background: #d97706; padding: 5px 8px; font-size: 11.5px; border-radius: 4px; color: white; border: none; cursor: pointer; margin: 2px; width: auto; }
-    .btn-del { background: #ef4444; padding: 5px 8px; font-size: 11.5px; border-radius: 4px; color: white; border: none; cursor: pointer; margin: 2px; width: auto; }
+    body { font-family: 'Cairo', sans-serif; -webkit-tap-highlight-color: transparent; }
   </style>
 </head>
-<body>
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-20 select-none">
 
-<div class="header-bar">
-  <div>
-    <h2 style="margin:0; font-size: 20px;">نظام تشغيل وتتبع طلبيات المعمل</h2>
-    <span style="font-size: 12px; opacity: 0.9;">التنسيق بين التجاري، طابق الإنتاج، وطابق التعبئة</span>
-  </div>
-</div>
+  <!-- Mobile Top Bar -->
+  <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-40 flex items-center justify-between shadow-md">
+    <div>
+      <h1 class="text-base font-black text-emerald-400">إدارة طلبيات التصنيع</h1>
+      <p class="text-[10px] text-slate-400">الربط الداخلي: التجاري ⇄ الإنتاج ⇄ التعبئة</p>
+    </div>
+    <span id="role-pill" class="text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">
+      المدير التجاري
+    </span>
+  </header>
 
-<div class="grid">
-  <!-- نموذج إدخال طلبية جديدة (القسم التجاري) -->
-  <div class="card">
-    <h3>إصدار طلبية تشغيل جديدة (القسم التجاري)</h3>
-    <form id="orderForm">
-      <label>الزبون / الجهة الطالبة</label>
-      <select id="client" required>
-        <option value="شركة بريماسيا">شركة بريماسيا</option>
-        <option value="أحمد شنتوت">أحمد شنتوت</option>
-        <option value="زياد المصري">زياد المصري</option>
-        <option value="أحمد عبد الرحمن">أحمد عبد الرحمن</option>
-        <option value="عميل آخر">زبون آخر</option>
-      </select>
-
-      <label>القسم / نوع الصنف</label>
-      <select id="category" required>
-        <option value="زعتر (خلط وتجهيز)">زعتر (خلط وتجهيز)</option>
-        <option value="بهارات (طحن وتوليف)">بهارات (طحن وتوليف)</option>
-        <option value="بقوليات ومجففات (فرز وتعبئة)">بقوليات ومجففات (فرز وتعبئة)</option>
-      </select>
-
-      <label>تفاصيل الصنف</label>
-      <input type="text" id="details" placeholder="مثال: زعتر ملوكي اكسترا / بهارات كبسة" required>
-
-      <label>الكمية المطلوبة (كغ أو طن)</label>
-      <input type="text" id="quantity" placeholder="مثال: 500 كغ" required>
-
-      <label>نوع التعبئة والغلاف</label>
-      <input type="text" id="packaging" placeholder="مثال: أكياس 1 كغ / سطل / كرتون" required>
-
-      <label>ملاحظات نواقص / خامات يلتزم بها التجاري</label>
-      <input type="text" id="shortage" placeholder="مثال: بحاجة توريد سمسم ورولات أكياس">
-
-      <button type="submit">إرسال الطلب إلى طابق الإنتاج</button>
-    </form>
+  <!-- Role Switcher (Scrollable on Mobile) -->
+  <div class="px-4 pt-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+    <button onclick="switchRole('commercial')" id="btn-commercial" class="role-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold transition bg-emerald-600 text-white shadow-lg shadow-emerald-950">المدير التجاري</button>
+    <button onclick="switchRole('production')" id="btn-production" class="role-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 border border-slate-800">إدارة الإنتاج</button>
+    <button onclick="switchRole('packaging')" id="btn-packaging" class="role-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 border border-slate-800">قسم التعبئة</button>
   </div>
 
-  <!-- جدول التتبع وإدارة سير العمل -->
-  <div class="card" style="overflow-x: auto;">
-    <h3>قائمة الطلبيات وسير العمل الميداني</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>رقم الطلب</th>
-          <th>الزبون</th>
-          <th>الصنف والكمية</th>
-          <th>التعبئة</th>
-          <th>المرحلة الحالية</th>
-          <th>نواقص القسم التجاري</th>
-          <th>الإجراءات</th>
-        </tr>
-      </thead>
-      <tbody id="ordersTable"></tbody>
-    </table>
-  </div>
-</div>
+  <main class="p-4 space-y-4">
 
-<script>
-  const STORAGE_KEY = 'spices_factory_orders_v1';
-  let orders = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    <!-- Counters Grid -->
+    <div class="grid grid-cols-2 gap-2">
+      <div class="bg-slate-900 border border-slate-800 p-2.5 rounded-xl flex justify-between items-center">
+        <span class="text-[11px] text-slate-400">إجمالي الطلبات</span>
+        <span id="stat-total" class="font-bold text-white text-base">0</span>
+      </div>
+      <div class="bg-rose-950/20 border border-rose-500/40 p-2.5 rounded-xl flex justify-between items-center">
+        <span class="text-[11px] text-rose-400 font-bold">نواقص مشتريات</span>
+        <span id="stat-missing" class="font-bold text-rose-400 text-base">0</span>
+      </div>
+    </div>
 
-  const stages = [
-    { key: 'commercial', label: '1. استلام تجاري', class: 'st-commercial', next: 'طابق الإنتاج' },
-    { key: 'production', label: '2. قيد الإنتاج والخلط', class: 'st-production', next: 'طابق التعبئة' },
-    { key: 'packaging', label: '3. قيد التعبئة والفرز', class: 'st-packaging', next: 'تسليم للتجاري' },
-    { key: 'done', label: '4. جاهز / تم التسليم', class: 'st-done', next: 'إعادة تفعيل' }
-  ];
+    <!-- Commercial Entry Form (Collapsible/Optimized) -->
+    <div id="panel-commercial" class="bg-slate-900 border border-emerald-500/30 p-4 rounded-2xl shadow-xl">
+      <h2 class="text-xs font-bold text-emerald-400 mb-3 flex items-center gap-1.5">
+        <span>📝</span> إدخال طلبية تصنيع جديدة
+      </h2>
+      <form onsubmit="handleCreateOrder(event)" class="space-y-3">
+        <div>
+          <label class="block text-[11px] text-slate-400 mb-1">اسم العميل / الوجهة</label>
+          <input type="text" id="custName" required placeholder="مثال: احمد عبد الرحمن" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:border-emerald-500 outline-none text-white" />
+        </div>
 
-  function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
-    render();
-  }
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">الأولوية</label>
+            <select id="orderPriority" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-2 text-xs focus:border-emerald-500 outline-none text-white">
+              <option value="مستعجل">🔥 مستعجل</option>
+              <option value="عادي" selected>عادي</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">ملاحظة سريعة</label>
+            <input type="text" id="orderNote" placeholder="اختياري..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:border-emerald-500 outline-none text-white" />
+          </div>
+        </div>
 
-  document.getElementById('orderForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const newOrder = {
-      id: Date.now().toString().slice(-4),
-      client: document.getElementById('client').value,
-      category: document.getElementById('category').value,
-      details: document.getElementById('details').value,
-      quantity: document.getElementById('quantity').value,
-      packaging: document.getElementById('packaging').value,
-      shortage: document.getElementById('shortage').value.trim(),
-      stageIndex: 1 // يُرسل مباشرة لطابق الإنتاج
+        <div class="border-t border-slate-800 pt-3">
+          <label class="block text-[11px] font-bold text-slate-300 mb-2">أصناف الطلبية:</label>
+          <div id="itemsContainer" class="space-y-2">
+            <div class="item-row bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-2">
+              <input type="text" placeholder="اسم المادة (مثال: زعتر اخضر 10 كغ)" required class="prod-input w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none" />
+              <div class="grid grid-cols-2 gap-2">
+                <input type="number" placeholder="العدد (أكياس)" required class="qty-input w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none" />
+                <input type="number" placeholder="الوزن الإجمالي (كغ)" required class="weight-input w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none" />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-2 mt-3">
+            <button type="button" onclick="addItemRow()" class="w-1/2 py-2 text-[11px] bg-slate-800 border border-slate-700 text-slate-200 rounded-xl font-bold">
+              + صنف آخر
+            </button>
+            <button type="submit" class="w-1/2 py-2 text-[11px] bg-emerald-600 text-white rounded-xl font-bold shadow-lg shadow-emerald-950">
+              إرسال الطلب
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Orders Cards Container (Mobile Cards List) -->
+    <div class="space-y-3">
+      <h3 class="text-xs font-bold text-slate-300 px-1">قائمة الطلبيات الحالية:</h3>
+      <div id="cardsList" class="space-y-3">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let currentRole = 'commercial';
+
+    let orders = [
+      {
+        id: 2,
+        client: "احمد عبد الرحمن",
+        priority: "مستعجل",
+        items: [
+          { name: "زعتر اخضر الرفادة 10 كغ", qty: 100, weight: 1000 },
+          { name: "زعتر احمر الرفادة 10 كغ", qty: 100, weight: 1000 }
+        ],
+        status: "missing_materials",
+        missingMaterials: "200 كغ سمسم محمص بلدي + 200 كيس فارغ 10 كغ",
+        note: "بانتظار شراء وتوريد المواد للمعمل للبدء"
+      }
+    ];
+
+    const statusMap = {
+      pending_production: { label: "بانتظار الإنتاج", color: "text-amber-400 bg-amber-500/10 border-amber-500/30" },
+      missing_materials: { label: "🛑 نقص مواد (مشتريات)", color: "text-rose-400 bg-rose-500/20 border-rose-500/40 font-bold" },
+      in_production: { label: "قيد التصنيع والخلط", color: "text-blue-400 bg-blue-500/10 border-blue-500/30" },
+      in_packaging: { label: "في قسم التعبئة", color: "text-purple-400 bg-purple-500/10 border-purple-500/30" },
+      completed: { label: "جاهز للتسليم", color: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30" }
     };
-    orders.unshift(newOrder);
-    save();
-    document.getElementById('orderForm').reset();
-  });
 
-  function nextStage(id) {
-    const o = orders.find(x => x.id === id);
-    if (!o) return;
-    o.stageIndex = (o.stageIndex + 1) % stages.length;
-    save();
-  }
+    function switchRole(role) {
+      currentRole = role;
+      document.querySelectorAll('.role-btn').forEach(btn => {
+        btn.className = 'role-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 border border-slate-800';
+      });
+      document.getElementById(`btn-${role}`).className = 'role-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold transition bg-emerald-600 text-white shadow-lg shadow-emerald-950';
 
-  function toggleShortage(id) {
-    const o = orders.find(x => x.id === id);
-    if (!o) return;
-    const current = o.shortage;
-    const update = prompt("تحديث النواقص المطلوبة من القسم التجاري:", current || "");
-    if (update !== null) {
-      o.shortage = update.trim();
-      save();
+      document.getElementById('panel-commercial').style.display = (role === 'commercial') ? 'block' : 'none';
+
+      const pill = document.getElementById('role-pill');
+      if(role === 'commercial') pill.innerText = 'المدير التجاري';
+      if(role === 'production') pill.innerText = 'إدارة الإنتاج';
+      if(role === 'packaging') pill.innerText = 'قسم التعبئة';
+
+      render();
     }
-  }
 
-  function deleteOrder(id) {
-    if (confirm("هل تريد حذف هذه الطلبية نهائياً؟")) {
-      orders = orders.filter(x => x.id !== id);
-      save();
-    }
-  }
-
-  function render() {
-    const tbody = document.getElementById('ordersTable');
-    tbody.innerHTML = '';
-    orders.forEach(o => {
-      const stage = stages[o.stageIndex] || stages[0];
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><strong>#${o.id}</strong></td>
-        <td>${o.client}</td>
-        <td><strong>${o.details}</strong><br><small style="color:#64748b;">${o.category} - ${o.quantity}</small></td>
-        <td>${o.packaging}</td>
-        <td><span class="badge ${stage.class}">${stage.label}</span></td>
-        <td>${o.shortage ? `<span class="shortage-tag">${o.shortage}</span>` : '<span style="color:#10b981; font-size:11px;">مكتمل المواد</span>'}</td>
-        <td>
-          <button class="btn-step" onclick="nextStage('${o.id}')">نقل: ${stage.next}</button>
-          <button class="btn-shortage" onclick="toggleShortage('${o.id}')">نقص</button>
-          <button class="btn-del" onclick="deleteOrder('${o.id}')">حذف</button>
-        </td>
+    function addItemRow() {
+      const container = document.getElementById('itemsContainer');
+      const div = document.createElement('div');
+      div.className = "item-row bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-2 relative";
+      div.innerHTML = `
+        <input type="text" placeholder="اسم المادة" required class="prod-input w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none" />
+        <div class="grid grid-cols-2 gap-2">
+          <input type="number" placeholder="العدد" required class="qty-input w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none" />
+          <input type="number" placeholder="الوزن (كغ)" required class="weight-input w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none" />
+        </div>
+        <button type="button" onclick="this.closest('.item-row').remove()" class="text-rose-500 text-[10px] font-bold mt-1">حذف البند</button>
       `;
-      tbody.appendChild(tr);
-    });
-  }
+      container.appendChild(div);
+    }
 
-  render();
-</script>
+    function handleCreateOrder(e) {
+      e.preventDefault();
+      const rows = document.querySelectorAll('.item-row');
+      const items = [];
+      rows.forEach(r => {
+        items.push({
+          name: r.querySelector('.prod-input').value,
+          qty: Number(r.querySelector('.qty-input').value),
+          weight: Number(r.querySelector('.weight-input').value)
+        });
+      });
 
+      orders.unshift({
+        id: orders.length + 3,
+        client: document.getElementById('custName').value,
+        priority: document.getElementById('orderPriority').value,
+        items: items,
+        status: "pending_production",
+        missingMaterials: null,
+        note: document.getElementById('orderNote').value || "طلب جديد محول للإنتاج"
+      });
+
+      e.target.reset();
+      render();
+    }
+
+    function reportMissing(id) {
+      const missing = prompt("اكتب المواد الأولية الناقصة لتأمينها من المشتريات:");
+      if (missing && missing.trim() !== "") {
+        const order = orders.find(o => o.id === id);
+        if (order) {
+          order.status = "missing_materials";
+          order.missingMaterials = missing.trim();
+          order.note = "بانتظار شراء وتوريد المواد";
+          render();
+        }
+      }
+    }
+
+    function resolveMissing(id) {
+      const order = orders.find(o => o.id === id);
+      if (order) {
+        order.status = "in_production";
+        order.note = `تم شراء المواد (${order.missingMaterials}) وبدأ الخلط`;
+        order.missingMaterials = null;
+        render();
+      }
+    }
+
+    function advanceStatus(id, newStatus, newNote) {
+      const order = orders.find(o => o.id === id);
+      if (order) {
+        order.status = newStatus;
+        order.note = newNote;
+        render();
+      }
+    }
+
+    function render() {
+      document.getElementById('stat-total').innerText = orders.length;
+      document.getElementById('stat-missing').innerText = orders.filter(o => o.status === 'missing_materials').length;
+
+      const container = document.getElementById('cardsList');
+      container.innerHTML = '';
+
+      orders.forEach(o => {
+        const card = document.createElement('div');
+        card.className = `p-4 rounded-2xl border transition ${o.status === 'missing_materials' ? 'bg-rose-950/20 border-rose-500/40' : 'bg-slate-900 border-slate-800'}`;
+
+        let itemsHtml = o.items.map(it => `
+          <div class="flex justify-between items-center text-xs py-1 border-b border-slate-800/80 last:border-0">
+            <span class="text-slate-200">• ${it.name}</span>
+            <span class="font-mono text-slate-400 text-[11px]">${it.qty} كيس (${it.weight} كغ)</span>
+          </div>
+        `).join('');
+
+        let actionBtn = ``;
+        if (currentRole === 'production') {
+          if (o.status === 'pending_production') {
+            actionBtn = `
+              <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-800">
+                <button onclick="advanceStatus(${o.id}, 'in_production', 'المواد متوفرة - بدأ الخلط')" class="w-full py-2 bg-blue-600 active:bg-blue-700 text-white rounded-xl text-xs font-bold">بدء الإنتاج</button>
+                <button onclick="reportMissing(${o.id})" class="w-full py-2 bg-rose-600 active:bg-rose-700 text-white rounded-xl text-xs font-bold">تسجيل نواقص</button>
+              </div>
+            `;
+          } else if (o.status === 'in_production') {
+            actionBtn = `
+              <div class="mt-3 pt-3 border-t border-slate-800">
+                <button onclick="advanceStatus(${o.id}, 'in_packaging', 'جاهز للتعبئة والتغليف')" class="w-full py-2.5 bg-purple-600 active:bg-purple-700 text-white rounded-xl text-xs font-bold">تحويل إلى قسم التعبئة ➔</button>
+              </div>
+            `;
+          }
+        } else if (currentRole === 'commercial') {
+          if (o.status === 'missing_materials') {
+            actionBtn = `
+              <div class="mt-3 pt-3 border-t border-slate-800">
+                <button onclick="resolveMissing(${o.id})" class="w-full py-2.5 bg-emerald-600 active:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-950 flex items-center justify-center gap-1.5">
+                  <span>✓</span> تم شراء وتوريد المواد للمعمل
+                </button>
+              </div>
+            `;
+          }
+        } else if (currentRole === 'packaging') {
+          if (o.status === 'in_packaging') {
+            actionBtn = `
+              <div class="mt-3 pt-3 border-t border-slate-800">
+                <button onclick="advanceStatus(${o.id}, 'completed', 'تم استكمال التعبئة والترحيل للمستودع')" class="w-full py-2.5 bg-emerald-600 active:bg-emerald-700 text-white rounded-xl text-xs font-bold">إتمام التعبئة وإغلاق الطلب ✓</button>
+              </div>
+            `;
+          }
+        }
+
+        let missingBox = ``;
+        if (o.missingMaterials) {
+          missingBox = `
+            <div class="bg-rose-900/30 border border-rose-500/30 rounded-xl p-2.5 mt-2">
+              <span class="text-[11px] font-bold text-rose-300 block">🛑 مطلوب من المشتريات:</span>
+              <span class="text-xs text-rose-200">${o.missingMaterials}</span>
+            </div>
+          `;
+        }
+
+        card.innerHTML = `
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <span class="text-xs font-mono font-bold text-slate-400">#${o.id}</span>
+              <span class="text-sm font-bold text-white mr-1">${o.client}</span>
+            </div>
+            <div class="flex gap-1.5 items-center">
+              <span class="text-[10px] px-2 py-0.5 rounded-full font-bold ${o.priority === 'مستعجل' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-slate-800 text-slate-400'}">${o.priority}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full border ${statusMap[o.status].color}">${statusMap[o.status].label}</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 my-2 space-y-1">
+            ${itemsHtml}
+          </div>
+
+          ${missingBox}
+
+          <div class="text-[11px] text-slate-400 mt-2 flex items-center gap-1">
+            <span>📌</span> <span>${o.note}</span>
+          </div>
+
+          ${actionBtn}
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    render();
+  </script>
 </body>
 </html>
