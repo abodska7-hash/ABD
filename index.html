@@ -14,188 +14,240 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen pb-24 select-none">
 
-  <!-- Header -->
-  <header class="bg-slate-900 border-b border-slate-800 p-3.5 sticky top-0 z-40 flex items-center justify-between shadow-md">
-    <div>
-      <div class="flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        <h1 class="text-sm font-black text-white">شركة الرفادة - مسار الطلبيات</h1>
+  <!-- LOGIN SCREEN (Displays when no user is logged in) -->
+  <div id="login-screen" class="fixed inset-0 bg-slate-950 z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl w-full max-w-sm shadow-2xl space-y-5">
+      <div class="text-center space-y-1">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-400 text-xl font-black">
+          🌿
+        </div>
+        <h1 class="text-base font-black text-white pt-2">شركة الرفادة للصناعة والتجارة</h1>
+        <p class="text-[11px] text-slate-400">نظام إدارة ومتابعة طلبيات المعمل</p>
       </div>
-      <p class="text-[10px] text-slate-400 mt-0.5" id="current-user-desc">المدير التجاري (أ. ملهم)</p>
-    </div>
-    <span id="role-badge" class="text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">
-      المدير التجاري
-    </span>
-  </header>
 
-  <!-- Role Switcher -->
-  <div class="px-3 pt-3 flex gap-1.5 overflow-x-auto pb-1 no-scrollbar border-b border-slate-900">
-    <button onclick="setRole('commercial')" id="btn-commercial" class="role-btn whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-bold transition bg-emerald-600 text-white shadow-lg shadow-emerald-950">المدير التجاري</button>
-    <button onclick="setRole('accountant')" id="btn-accountant" class="role-btn whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 border border-slate-800">المحاسب</button>
-    <button onclick="setRole('supervisor')" id="btn-supervisor" class="role-btn whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 border border-slate-800">إدارة الإنتاج</button>
-    <button onclick="setRole('production_floor')" id="btn-production_floor" class="role-btn whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 border border-slate-800">صالة الإنتاج</button>
-    <button onclick="setRole('packaging_floor')" id="btn-packaging_floor" class="role-btn whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 border border-slate-800">صالة التعبئة</button>
-  </div>
-
-  <main class="p-3.5 space-y-3.5 max-w-2xl mx-auto">
-
-    <!-- KPI Summary -->
-    <div class="grid grid-cols-3 gap-2 text-center">
-      <div class="bg-slate-900 border border-slate-800 p-2 rounded-xl">
-        <span class="text-[10px] text-slate-400 block">إجمالي النشط</span>
-        <span id="stat-active" class="font-bold text-white text-sm">0</span>
-      </div>
-      <div class="bg-rose-950/30 border border-rose-500/40 p-2 rounded-xl">
-        <span class="text-[10px] text-rose-400 font-bold block">نواقص مشتريات</span>
-        <span id="stat-missing" class="font-bold text-rose-400 text-sm">0</span>
-      </div>
-      <div class="bg-emerald-950/30 border border-emerald-500/30 p-2 rounded-xl">
-        <span class="text-[10px] text-emerald-400 block">جاهز للتسليم</span>
-        <span id="stat-completed" class="font-bold text-emerald-400 text-sm">0</span>
-      </div>
-    </div>
-
-    <!-- Commercial Entry Form -->
-    <div id="panel-commercial-input" class="bg-slate-900 border border-emerald-500/30 p-3.5 rounded-2xl shadow-xl">
-      <h2 class="text-xs font-bold text-emerald-400 mb-2.5 flex items-center gap-1.5">
-        <span>📥</span> تسجيل طلبية تصنيع جديدة
-      </h2>
-      <form onsubmit="createCommercialOrder(event)" class="space-y-3">
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-[10px] text-slate-400 mb-1">اسم الزبون / التاجر</label>
-            <input type="text" id="comm_client" required placeholder="مثال: زياد المصري" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-white outline-none focus:border-emerald-500" />
-          </div>
-          <div>
-            <label class="block text-[10px] text-slate-400 mb-1">الأولوية</label>
-            <select id="comm_priority" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-xs text-white outline-none">
-              <option value="عادي">عادي</option>
-              <option value="مستعجل">🔥 مستعجل</option>
-            </select>
-          </div>
+      <form onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-[11px] text-slate-300 font-bold mb-1.5">اختر القسم / المستخدم:</label>
+          <select id="login-role" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-emerald-500">
+            <option value="commercial">المدير التجاري (أ. ملهم)</option>
+            <option value="accountant">المحاسب</option>
+            <option value="supervisor">إدارة الإنتاج</option>
+            <option value="production_floor">صالة الإنتاج والخلط</option>
+            <option value="packaging_floor">صالة التعبئة والتغليف</option>
+          </select>
         </div>
 
         <div>
-          <label class="block text-[10px] text-slate-400 mb-1">ملاحظة عامة على الطلبية ككل (اختياري)</label>
-          <input type="text" id="comm_general_note" placeholder="مثال: شحنة تصدير - تسليم فوري للمستودع" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-white outline-none focus:border-emerald-500" />
+          <label class="block text-[11px] text-slate-300 font-bold mb-1.5">الرمز السري (PIN):</label>
+          <input type="password" id="login-pin" maxlength="6" inputmode="numeric" required placeholder="أدخل الرمز السري..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-center text-sm font-mono tracking-widest text-emerald-400 outline-none focus:border-emerald-500" />
+          <p id="login-error" class="text-rose-400 text-[10px] mt-1.5 text-center hidden font-bold">الرمز السري غير صحيح، يرجى المحاولة ثانية</p>
         </div>
 
-        <!-- Materials Section -->
-        <div class="border-t border-slate-800/80 pt-2.5">
-          <label class="block text-[11px] font-bold text-slate-300 mb-2">أصناف ومواد الطلبية مع الملاحظات والوجهة:</label>
-          
-          <div id="items-entry-container" class="space-y-2.5">
-            <!-- Row Template -->
-            <div class="item-input-group bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-2 relative">
-              <div class="grid grid-cols-3 gap-2">
-                <div class="col-span-2">
-                  <input type="text" placeholder="اسم المادة (مثال: زعتر ملوكي 10 كغ)" required class="item-name w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-emerald-500" />
-                </div>
-                <div>
-                  <input type="text" placeholder="الكمية / الأكياس" required class="item-qty w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-emerald-500" />
-                </div>
-              </div>
-              <div>
-                <input type="text" placeholder="ملاحظة المادة (مثال: وجهة الإمارات - إنتاج 09/2026 انتهاء 09/2028)" class="item-note w-full bg-slate-900/70 border border-slate-800/80 text-amber-200 placeholder-slate-500 rounded-lg px-2 py-1 text-[11px] outline-none focus:border-amber-500/50" />
-              </div>
+        <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-950 transition">
+          تسجيل الدخول ➔
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN APP (Displays after login) -->
+  <div id="main-app" class="hidden">
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 p-3 sticky top-0 z-40 flex items-center justify-between shadow-md">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <h1 class="text-xs font-black text-white">مسار طلبيات المعمل - الرفادة</h1>
+        </div>
+        <p class="text-[10px] text-emerald-400 mt-0.5" id="header-user-name">...</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="header-role-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 font-bold">...</span>
+        <button onclick="logout()" class="text-[10px] px-2 py-1 rounded-lg bg-rose-950/40 text-rose-300 hover:bg-rose-900 border border-rose-800/50 transition">
+          خروج 🚪
+        </button>
+      </div>
+    </header>
+
+    <main class="p-3.5 space-y-3.5 max-w-2xl mx-auto">
+
+      <!-- KPI Summary -->
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div class="bg-slate-900 border border-slate-800 p-2 rounded-xl">
+          <span class="text-[10px] text-slate-400 block">إجمالي النشط</span>
+          <span id="stat-active" class="font-bold text-white text-sm">0</span>
+        </div>
+        <div class="bg-rose-950/30 border border-rose-500/40 p-2 rounded-xl">
+          <span class="text-[10px] text-rose-400 font-bold block" id="stat-missing-label">نواقص مشتريات</span>
+          <span id="stat-missing" class="font-bold text-rose-400 text-sm">0</span>
+        </div>
+        <div class="bg-emerald-950/30 border border-emerald-500/30 p-2 rounded-xl">
+          <span class="text-[10px] text-emerald-400 block">جاهز للتسليم</span>
+          <span id="stat-completed" class="font-bold text-emerald-400 text-sm">0</span>
+        </div>
+      </div>
+
+      <!-- Commercial Entry Form (Only visible to Commercial Role) -->
+      <div id="panel-commercial-input" class="bg-slate-900 border border-emerald-500/30 p-3.5 rounded-2xl shadow-xl hidden">
+        <h2 class="text-xs font-bold text-emerald-400 mb-2.5 flex items-center gap-1.5">
+          <span>📥</span> تسجيل طلبية جديدة من التاجر / الزبون
+        </h2>
+        <form onsubmit="createCommercialOrder(event)" class="space-y-3">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-1">اسم الزبون / التاجر</label>
+              <input type="text" id="comm_client" required placeholder="مثال: زياد المصري" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-white outline-none focus:border-emerald-500" />
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-1">الأولوية</label>
+              <select id="comm_priority" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-1.5 text-xs text-white outline-none">
+                <option value="عادي">عادي</option>
+                <option value="مستعجل">🔥 مستعجل</option>
+              </select>
             </div>
           </div>
 
-          <div class="flex gap-2 mt-2.5">
-            <button type="button" onclick="addNewItemRow()" class="w-1/2 py-2 text-[11px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl font-bold">
-              + إضافة صنف آخر
-            </button>
-            <button type="submit" class="w-1/2 py-2 text-[11px] bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold shadow-lg shadow-emerald-950">
-              إرسال الطلبية للمحاسب ➔
-            </button>
+          <div>
+            <label class="block text-[10px] text-slate-400 mb-1">ملاحظة عامة على الطلبية ككل (اختياري)</label>
+            <input type="text" id="comm_general_note" placeholder="مثال: شحنة مستعجلة - تسليم للمستودع" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-white outline-none focus:border-emerald-500" />
           </div>
-        </div>
-      </form>
-    </div>
 
-    <!-- Filter / Title -->
-    <div class="flex items-center justify-between px-1">
-      <h3 class="text-xs font-bold text-slate-300">الطلبيات في خط السير:</h3>
-      <button onclick="resetData()" class="text-[10px] text-slate-500 hover:text-rose-400 transition underline">استعادة الافتراضي</button>
-    </div>
+          <div class="border-t border-slate-800/80 pt-2.5">
+            <label class="block text-[11px] font-bold text-slate-300 mb-2">أصناف ومواد الطلبية مع الملاحظات والوجهة:</label>
+            <div id="items-entry-container" class="space-y-2.5">
+              <div class="item-input-group bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-2 relative">
+                <div class="grid grid-cols-3 gap-2">
+                  <div class="col-span-2">
+                    <input type="text" placeholder="اسم المادة (مثال: زعتر اخضر 10 كغ)" required class="item-name w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-emerald-500" />
+                  </div>
+                  <div>
+                    <input type="text" placeholder="الكمية" required class="item-qty w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-emerald-500" />
+                  </div>
+                </div>
+                <div>
+                  <input type="text" placeholder="ملاحظة المادة (مثال: وجهة الإمارات - صلاحية سنتين)" class="item-note w-full bg-slate-900/70 border border-slate-800/80 text-amber-200 placeholder-slate-500 rounded-lg px-2 py-1 text-[11px] outline-none focus:border-amber-500/50" />
+                </div>
+              </div>
+            </div>
 
-    <!-- Cards List -->
-    <div id="orders-container" class="space-y-3">
-      <!-- Injected by JS -->
-    </div>
+            <div class="flex gap-2 mt-2.5">
+              <button type="button" onclick="addNewItemRow()" class="w-1/2 py-2 text-[11px] bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl font-bold">
+                + إضافة صنف آخر
+              </button>
+              <button type="submit" class="w-1/2 py-2 text-[11px] bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold shadow-lg shadow-emerald-950">
+                إرسال للمحاسب ➔
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
 
-  </main>
+      <!-- Orders List Header -->
+      <div class="flex items-center justify-between px-1">
+        <h3 class="text-xs font-bold text-slate-300">سجل الطلبيات الحالية:</h3>
+        <span class="text-[10px] text-slate-500" id="current-filter-desc">محدث فورياً</span>
+      </div>
+
+      <!-- Cards Container -->
+      <div id="orders-container" class="space-y-3"></div>
+
+    </main>
+  </div>
 
   <script>
-    let currentRole = 'commercial';
+    // Configuration of Roles and PIN Codes
+    const ROLES = {
+      commercial: { name: "أ. ملهم (المدير التجاري)", title: "المدير التجاري", pin: "1111", isSecretPrivileged: true },
+      accountant: { name: "محاسب المعمل", title: "المحاسب", pin: "2222", isSecretPrivileged: false },
+      supervisor: { name: "إدارة الإنتاج", title: "إدارة الإنتاج", pin: "3333", isSecretPrivileged: true },
+      production_floor: { name: "صالة الإنتاج والخلط", title: "صالة الإنتاج", pin: "4444", isSecretPrivileged: true },
+      packaging_floor: { name: "صالة التعبئة والتغليف", title: "صالة التعبئة", pin: "5555", isSecretPrivileged: false }
+    };
+
+    let currentUserRole = localStorage.getItem('alrefada_logged_role') || null;
 
     const statusConfig = {
       with_accountant: { label: "عند المحاسب (تدقيق)", color: "text-amber-400 bg-amber-500/10 border-amber-500/30" },
       with_supervisor: { label: "بانتظار إذن الإنتاج", color: "text-blue-400 bg-blue-500/10 border-blue-500/30" },
-      in_production: { label: "قيد الخلط والطحن بالصالة", color: "text-cyan-400 bg-cyan-500/10 border-cyan-500/30" },
-      missing_materials: { label: "🛑 نواقص مشتريات (عند ملهم)", color: "text-rose-400 bg-rose-500/20 border-rose-500/40 animate-pulse font-bold" },
+      in_production: { label: "قيد الخلط بالصالة", color: "text-cyan-400 bg-cyan-500/10 border-cyan-500/30" },
+      missing_materials: { label: "🛑 نقص مواد مشتريات", color: "text-rose-400 bg-rose-500/20 border-rose-500/40 font-bold" },
       in_packaging: { label: "في صالة التعبئة والتغليف", color: "text-purple-400 bg-purple-500/10 border-purple-500/30" },
-      ready: { label: "جاهز للتسليم / بالمستودع ✓", color: "text-emerald-400 bg-emerald-500/15 border-emerald-500/40 font-bold" }
+      ready: { label: "جاهز للتسليم بالمستودع ✓", color: "text-emerald-400 bg-emerald-500/15 border-emerald-500/40 font-bold" }
     };
 
-    const defaultOrders = [
+    let orders = JSON.parse(localStorage.getItem('alrefada_orders_secure')) || [
       {
         id: 101,
         client: "زياد المصري",
         priority: "مستعجل",
         items: [
-          {
-            name: "زعتر اخضر ملوكي 10 كغ",
-            qty: "50 كيس (500 كغ)",
-            note: "وجهة الشحن: الإمارات - طباعة الصلاحية سنتين إنتاج 09/2026"
-          },
-          {
-            name: "سماق بلدي فاخر",
-            qty: "25 شوال (250 كغ)",
-            note: "وجهة: مستودع دمشق - أكياس خيش بدون طباعة تاريخ"
-          }
+          { name: "زعتر اخضر ملوكي 10 كغ", qty: "50 كيس (500 كغ)", note: "وجهة: الإمارات - صلاحية سنتين حتى 09/2028" },
+          { name: "سماق بلدي فاخر", qty: "25 شوال (250 كغ)", note: "وجهة: مستودع دمشق" }
         ],
         status: "missing_materials",
-        missingList: ["150 كغ سمسم محمص رقم 1", "50 كيس خيش لوغو الرفادة للإمارات"],
+        missingList: ["150 كغ سمسم محمص بلدي", "50 كيس خيش مخصص للتصدير"],
         deptNotes: [
-          { role: "المدير التجاري", text: "الزبون مستعجل جداً لتسليم حاوية الشحن", time: "10:30 ص" },
-          { role: "صالة الإنتاج", text: "تم تجهيز السماق وبانتظار السمسم للزعتر", time: "11:15 ص" }
+          { role: "المدير التجاري", text: "الزبون بحاجة لاستلام الطلبية لنهاية الأسبوع", time: "10:30 ص" }
         ],
-        log: "سجلت صالة الإنتاج نقص مواد لتجهيز الخلطة"
+        log: "سجلت صالة الإنتاج نقص مواد لتجهيز الطلب"
       }
     ];
 
-    let orders = JSON.parse(localStorage.getItem('alrefada_orders_v2')) || defaultOrders;
-
     function save() {
-      localStorage.setItem('alrefada_orders_v2', JSON.stringify(orders));
+      localStorage.setItem('alrefada_orders_secure', JSON.stringify(orders));
       render();
     }
 
-    function setRole(role) {
-      currentRole = role;
-      document.querySelectorAll('.role-btn').forEach(b => {
-        b.className = 'role-btn whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-bold transition bg-slate-900 text-slate-400 border border-slate-800';
-      });
-      document.getElementById(`btn-${role}`).className = 'role-btn whitespace-nowrap px-3 py-1.5 rounded-xl text-xs font-bold transition bg-emerald-600 text-white shadow-lg shadow-emerald-950';
+    // Login Handling
+    function handleLogin(e) {
+      e.preventDefault();
+      const roleKey = document.getElementById('login-role').value;
+      const enteredPin = document.getElementById('login-pin').value.trim();
+      const errBox = document.getElementById('login-error');
 
-      const panelComm = document.getElementById('panel-commercial-input');
-      const badge = document.getElementById('role-badge');
-      const desc = document.getElementById('current-user-desc');
+      if (ROLES[roleKey] && ROLES[roleKey].pin === enteredPin) {
+        currentUserRole = roleKey;
+        localStorage.setItem('alrefada_logged_role', roleKey);
+        errBox.classList.add('hidden');
+        document.getElementById('login-pin').value = '';
+        checkAuth();
+      } else {
+        errBox.classList.remove('hidden');
+      }
+    }
 
-      panelComm.style.display = (role === 'commercial') ? 'block' : 'none';
+    function logout() {
+      if (confirm("هل تريد تسجيل الخروج؟")) {
+        currentUserRole = null;
+        localStorage.removeItem('alrefada_logged_role');
+        checkAuth();
+      }
+    }
 
-      const roleMap = {
-        commercial: { title: "المدير التجاري", desc: "أ. ملهم - إدخال وتأمين النواقص" },
-        accountant: { title: "المحاسب", desc: "تدقيق الطلبيات وتثبيتها" },
-        supervisor: { title: "إدارة الإنتاج", desc: "مكتب المتابعة والإشراف العام" },
-        production_floor: { title: "صالة الإنتاج", desc: "الخلط، الطحن، وتسجيل النواقص" },
-        packaging_floor: { title: "صالة التعبئة", desc: "الوزن، التاريخ، والترحيل" }
-      };
+    function checkAuth() {
+      const loginScreen = document.getElementById('login-screen');
+      const mainApp = document.getElementById('main-app');
 
-      badge.innerText = roleMap[role].title;
-      desc.innerText = roleMap[role].desc;
-      render();
+      if (!currentUserRole || !ROLES[currentUserRole]) {
+        loginScreen.classList.remove('hidden');
+        mainApp.classList.add('hidden');
+      } else {
+        loginScreen.classList.add('hidden');
+        mainApp.classList.remove('hidden');
+
+        document.getElementById('header-user-name').innerText = ROLES[currentUserRole].name;
+        document.getElementById('header-role-badge').innerText = ROLES[currentUserRole].title;
+
+        // Display commercial entry panel only for commercial role
+        const commPanel = document.getElementById('panel-commercial-input');
+        if (currentUserRole === 'commercial') {
+          commPanel.classList.remove('hidden');
+        } else {
+          commPanel.classList.add('hidden');
+        }
+
+        render();
+      }
     }
 
     function addNewItemRow() {
@@ -208,11 +260,11 @@
             <input type="text" placeholder="اسم المادة" required class="item-name w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-emerald-500" />
           </div>
           <div>
-            <input type="text" placeholder="الكمية / الأكياس" required class="item-qty w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-emerald-500" />
+            <input type="text" placeholder="الكمية" required class="item-qty w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-emerald-500" />
           </div>
         </div>
         <div>
-          <input type="text" placeholder="ملاحظة المادة (الوجهة / تاريخ الإنتاج والانتهاء)" class="item-note w-full bg-slate-900/70 border border-slate-800/80 text-amber-200 placeholder-slate-500 rounded-lg px-2 py-1 text-[11px] outline-none focus:border-amber-500/50" />
+          <input type="text" placeholder="ملاحظة المادة (الوجهة / الصلاحية)" class="item-note w-full bg-slate-900/70 border border-slate-800/80 text-amber-200 placeholder-slate-500 rounded-lg px-2 py-1 text-[11px] outline-none focus:border-amber-500/50" />
         </div>
         <button type="button" onclick="this.closest('.item-input-group').remove()" class="text-rose-500 text-[10px] font-bold">حذف المادة ✕</button>
       `;
@@ -223,33 +275,26 @@
       e.preventDefault();
       const rows = document.querySelectorAll('.item-input-group');
       const items = [];
-
       rows.forEach(r => {
         const name = r.querySelector('.item-name').value.trim();
         const qty = r.querySelector('.item-qty').value.trim();
         const note = r.querySelector('.item-note').value.trim();
-        if (name && qty) {
-          items.push({ name, qty, note });
-        }
+        if (name && qty) items.push({ name, qty, note });
       });
 
-      if (items.length === 0) {
-        alert("يرجى إدخال صنف واحد على الأقل");
-        return;
-      }
+      if (items.length === 0) return;
 
       const generalNote = document.getElementById('comm_general_note').value.trim();
       const initialNotes = [];
       if (generalNote) {
         initialNotes.push({
-          role: "المدير التجاري",
+          role: ROLES[currentUserRole].title,
           text: generalNote,
           time: new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' })
         });
       }
 
       const nextId = orders.length > 0 ? Math.max(...orders.map(o => o.id)) + 1 : 101;
-
       orders.unshift({
         id: nextId,
         client: document.getElementById('comm_client').value.trim(),
@@ -258,63 +303,19 @@
         status: 'with_accountant',
         missingList: [],
         deptNotes: initialNotes,
-        log: 'تم إنشاء الطلبية من المدير التجاري وتحويلها للمحاسب'
+        log: 'تم إنشاء الطلبية وتحويلها للمحاسب للتدقيق'
       });
 
       e.target.reset();
-      // إعادة تعيين نموذج المواد لصف واحد فقط
-      document.getElementById('items-entry-container').innerHTML = `
-        <div class="item-input-group bg-slate-950 p-2.5 rounded-xl border border-slate-800 space-y-2 relative">
-          <div class="grid grid-cols-3 gap-2">
-            <div class="col-span-2">
-              <input type="text" placeholder="اسم المادة (مثال: زعتر ملوكي 10 كغ)" required class="item-name w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-emerald-500" />
-            </div>
-            <div>
-              <input type="text" placeholder="الكمية / الأكياس" required class="item-qty w-full bg-slate-900 border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-white outline-none focus:border-emerald-500" />
-            </div>
-          </div>
-          <div>
-            <input type="text" placeholder="ملاحظة المادة (مثال: وجهة الإمارات - إنتاج 09/2026 انتهاء 09/2028)" class="item-note w-full bg-slate-900/70 border border-slate-800/80 text-amber-200 placeholder-slate-500 rounded-lg px-2 py-1 text-[11px] outline-none focus:border-amber-500/50" />
-          </div>
-        </div>
-      `;
-
       save();
     }
 
-    // إضافة ملاحظة جديدة من أي قسم
-    function addGeneralNote(id) {
-      const noteText = prompt("اكتب ملاحظتك على هذه الطلبية (ستظهر للجميع مع اسم قسمك):");
-      if (noteText && noteText.trim() !== "") {
-        const ord = orders.find(o => o.id === id);
-        if (ord) {
-          if (!ord.deptNotes) ord.deptNotes = [];
-          
-          const roleTitles = {
-            commercial: "المدير التجاري",
-            accountant: "المحاسب",
-            supervisor: "إدارة الإنتاج",
-            production_floor: "صالة الإنتاج",
-            packaging_floor: "صالة التعبئة"
-          };
-
-          ord.deptNotes.push({
-            role: roleTitles[currentRole] || "ملاحظة إدارية",
-            text: noteText.trim(),
-            time: new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' })
-          });
-
-          save();
-        }
-      }
-    }
-
-    // Workflow actions
+    // Role Actions
     function accountantApprove(id) {
       const ord = orders.find(o => o.id === id);
       if (ord) {
         ord.status = 'with_supervisor';
-        ord.log = 'تم تدقيق الطلبية واعتمادها من المحاسب وتحويلها لإدارة الإنتاج';
+        ord.log = 'تم تدقيق الطلب وتثبيته وتحويله لإدارة الإنتاج';
         save();
       }
     }
@@ -323,20 +324,20 @@
       const ord = orders.find(o => o.id === id);
       if (ord) {
         ord.status = 'in_production';
-        ord.log = 'تم إعطاء أمر التشغيل لصالة الإنتاج للبدء فوراً';
+        ord.log = 'إصدار أمر البدء لصالة الإنتاج والخلط';
         save();
       }
     }
 
     function productionAddMissing(id) {
-      const raw = prompt("اكتب المواد الناقصة مفصولة بفاصلة (،) أو (+):\nمثال: سمسم محمص، أكياس 10كغ خاصة بالإمارات، سلفان");
+      const raw = prompt("سري للمدير التجاري: اكتب المواد الناقصة لتأمينها (افصل بفاصلة):");
       if (raw && raw.trim() !== '') {
         const items = raw.split(/[,،+]/).map(s => s.trim()).filter(Boolean);
         const ord = orders.find(o => o.id === id);
         if (ord) {
           ord.status = 'missing_materials';
           ord.missingList = items;
-          ord.log = `تم إيقاف العمل لنقص مواد: (${items.join(' - ')})`;
+          ord.log = 'بانتظار شراء مواد وتوريدها للمعمل من الإدارة التجارية';
           save();
         }
       }
@@ -347,7 +348,7 @@
       if (ord) {
         ord.status = 'in_production';
         ord.missingList = [];
-        ord.log = 'أكد المدير التجاري (ملهم) توريد المواد كاملة للمعمل - استئناف الخلط';
+        ord.log = 'أكد أ. ملهم شراء وتوريد المواد للمعمل - استئناف العمل';
         save();
       }
     }
@@ -356,7 +357,7 @@
       const ord = orders.find(o => o.id === id);
       if (ord) {
         ord.status = 'in_packaging';
-        ord.log = 'انتهى الخلط والطحن - تم تسليم الخلطات لصالة التعبئة';
+        ord.log = 'تم تجهيز وخلط المواد بالكامل ➔ تم التسليم لصالة التعبئة';
         save();
       }
     }
@@ -365,74 +366,116 @@
       const ord = orders.find(o => o.id === id);
       if (ord) {
         ord.status = 'ready';
-        ord.log = 'تمت التعبئة والتغليف مع طباعة الصلاحيات ومطابقة الوجهة ✓';
+        ord.log = 'تمت التعبئة والتغليف مع التحقق من تواريخ الصلاحية والوجهة ✓';
         save();
       }
     }
 
-    function resetData() {
-      if (confirm("هل تريد استعادة البيانات الافتراضية؟")) {
-        orders = [...defaultOrders];
-        save();
+    function addGeneralNote(id) {
+      const noteText = prompt("اكتب ملاحظتك على هذه الطلبية:");
+      if (noteText && noteText.trim() !== "") {
+        const ord = orders.find(o => o.id === id);
+        if (ord) {
+          if (!ord.deptNotes) ord.deptNotes = [];
+          ord.deptNotes.push({
+            role: ROLES[currentUserRole].title,
+            text: noteText.trim(),
+            time: new Date().toLocaleTimeString('ar-SY', { hour: '2-digit', minute: '2-digit' })
+          });
+          save();
+        }
       }
     }
 
     function render() {
+      if (!currentUserRole) return;
+
+      const userConf = ROLES[currentUserRole];
+      const isPrivileged = userConf.isSecretPrivileged; // Can view secret missing materials
+
+      // Update KPI Counter Labels based on secrecy
       document.getElementById('stat-active').innerText = orders.filter(o => o.status !== 'ready').length;
-      document.getElementById('stat-missing').innerText = orders.filter(o => o.status === 'missing_materials').length;
       document.getElementById('stat-completed').innerText = orders.filter(o => o.status === 'ready').length;
+      
+      if (isPrivileged) {
+        document.getElementById('stat-missing-label').innerText = "نواقص مشتريات";
+        document.getElementById('stat-missing').innerText = orders.filter(o => o.status === 'missing_materials').length;
+      } else {
+        document.getElementById('stat-missing-label').innerText = "قيد المتابعة";
+        document.getElementById('stat-missing').innerText = orders.filter(o => o.status === 'missing_materials').length;
+      }
 
       const container = document.getElementById('orders-container');
       container.innerHTML = '';
 
       if (orders.length === 0) {
-        container.innerHTML = `<div class="p-8 text-center text-slate-500 text-xs">لا توجد طلبات مسجلة حالياً</div>`;
+        container.innerHTML = `<div class="p-8 text-center text-slate-500 text-xs">لا توجد طلبيات حالياً</div>`;
         return;
       }
 
       orders.forEach(o => {
         const card = document.createElement('div');
         const isMissing = o.status === 'missing_materials';
-        card.className = `p-3.5 rounded-2xl border transition ${isMissing ? 'bg-rose-950/20 border-rose-500/50 shadow-lg shadow-rose-950/40' : 'bg-slate-900 border-slate-800'}`;
 
-        // Render Items with per-item notes (Dates / Destination)
-        let itemsHtml = '';
-        if (o.items && o.items.length > 0) {
-          itemsHtml = o.items.map(it => `
-            <div class="py-2 border-b border-slate-800/80 last:border-0">
-              <div class="flex justify-between items-start gap-2">
-                <span class="font-bold text-slate-200 text-xs">• ${it.name}</span>
-                <span class="font-mono text-emerald-400 text-[11px] font-bold bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/20 whitespace-nowrap">${it.qty}</span>
+        // Styling: Highlight red only if user is authorized to see missing materials
+        if (isMissing && isPrivileged) {
+          card.className = "p-3.5 rounded-2xl border transition bg-rose-950/25 border-rose-500/50 shadow-lg shadow-rose-950/40";
+        } else {
+          card.className = "p-3.5 rounded-2xl border transition bg-slate-900 border-slate-800";
+        }
+
+        // Mask Status Title for non-privileged roles (Packaging & Accountant)
+        let displayStatusLabel = statusConfig[o.status].label;
+        let displayStatusColor = statusConfig[o.status].color;
+
+        if (isMissing && !isPrivileged) {
+          displayStatusLabel = "قيد التجهيز الداخلي بالمعمل";
+          displayStatusColor = "text-amber-400 bg-amber-500/10 border-amber-500/30";
+        }
+
+        // Render Items List with Per-Item Notes (Destinations/Dates)
+        let itemsHtml = (o.items || []).map(it => `
+          <div class="py-2 border-b border-slate-800/80 last:border-0">
+            <div class="flex justify-between items-start gap-2">
+              <span class="font-bold text-slate-200 text-xs">• ${it.name}</span>
+              <span class="font-mono text-emerald-400 text-[11px] font-bold bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/20 whitespace-nowrap">${it.qty}</span>
+            </div>
+            ${it.note ? `
+              <div class="mt-1 flex items-center gap-1.5 text-[10px] text-amber-300 bg-amber-950/30 px-2 py-1 rounded border border-amber-500/20">
+                <span>📌</span>
+                <span>${it.note}</span>
               </div>
-              ${it.note ? `
-                <div class="mt-1 flex items-center gap-1.5 text-[10px] text-amber-300 bg-amber-950/30 px-2 py-1 rounded border border-amber-500/20">
-                  <span>📌</span>
-                  <span>${it.note}</span>
+            ` : ''}
+          </div>
+        `).join('');
+
+        // Secret Missing Materials Box (Strictly Gated)
+        let missingBoxHtml = '';
+        if (isMissing) {
+          if (isPrivileged && o.missingList && o.missingList.length > 0) {
+            missingBoxHtml = `
+              <div class="mt-2.5 p-2.5 rounded-xl bg-rose-950/60 border border-rose-500/40">
+                <span class="text-[10px] font-bold text-rose-300 block mb-1">🔒 سري (نواقص مشتريات مطلوبة من أ. ملهم):</span>
+                <div class="flex flex-wrap gap-1">
+                  ${o.missingList.map(m => `<span class="bg-rose-900/80 text-rose-200 border border-rose-700/60 px-2 py-0.5 rounded-lg text-[10px] font-medium">• ${m}</span>`).join('')}
                 </div>
-              ` : ''}
-            </div>
-          `).join('');
-        }
-
-        // Render Missing List
-        let missingHtml = '';
-        if (o.missingList && o.missingList.length > 0) {
-          missingHtml = `
-            <div class="mt-2 p-2.5 rounded-xl bg-rose-950/50 border border-rose-500/30">
-              <span class="text-[10px] font-bold text-rose-300 block mb-1">🛑 نواقص مطلوبة من المشتريات (تغذية عكسية لملهم):</span>
-              <div class="flex flex-wrap gap-1">
-                ${o.missingList.map(m => `<span class="bg-rose-900/60 text-rose-200 border border-rose-700/50 px-2 py-0.5 rounded-lg text-[10px] font-medium">• ${m}</span>`).join('')}
               </div>
-            </div>
-          `;
+            `;
+          } else if (!isPrivileged) {
+            missingBoxHtml = `
+              <div class="mt-2 p-2 rounded-xl bg-slate-950/50 border border-slate-800 text-[11px] text-slate-400 flex items-center gap-1.5">
+                <span>⏳</span> الطلبية قيد المتابعة والتجهيز الداخلي بالمعمل.
+              </div>
+            `;
+          }
         }
 
-        // Render All Departments' Notes Log
+        // Department Notes Log
         let notesHtml = '';
         if (o.deptNotes && o.deptNotes.length > 0) {
           notesHtml = `
             <div class="mt-2 bg-slate-950/80 p-2.5 rounded-xl border border-slate-800/80 space-y-1.5">
-              <span class="text-[10px] font-bold text-slate-400 block">💬 ملاحظات وتنبيهات الأقسام:</span>
+              <span class="text-[10px] font-bold text-slate-400 block">💬 تنبيهات الأقسام:</span>
               ${o.deptNotes.map(n => `
                 <div class="text-[11px] bg-slate-900/90 p-1.5 rounded-lg border border-slate-800 flex justify-between items-start gap-2">
                   <div>
@@ -446,62 +489,52 @@
           `;
         }
 
-        // Action Buttons according to logged Role
+        // Action Buttons strictly filtered by logged-in role
         let actionArea = '';
 
-        if (currentRole === 'commercial') {
-          if (o.status === 'missing_materials') {
-            actionArea = `
-              <div class="mt-2.5 pt-2 border-t border-slate-800">
-                <button onclick="commercialResolveMissing(${o.id})" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-950 flex items-center justify-center gap-1.5">
-                  <span>✓</span> تم شراء وتأمين كافة المواد للمعمل
-                </button>
-              </div>
-            `;
-          }
-        } else if (currentRole === 'accountant') {
-          if (o.status === 'with_accountant') {
-            actionArea = `
-              <div class="mt-2.5 pt-2 border-t border-slate-800">
-                <button onclick="accountantApprove(${o.id})" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1">
-                  <span>✓</span> تدقيق واعتماد الطلبية وإرسالها لإدارة الإنتاج
-                </button>
-              </div>
-            `;
-          }
-        } else if (currentRole === 'supervisor') {
-          if (o.status === 'with_supervisor') {
-            actionArea = `
-              <div class="mt-2.5 pt-2 border-t border-slate-800">
-                <button onclick="supervisorDispatch(${o.id})" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold">
-                  إصدار أمر البدء وإرسال لصالة الإنتاج ➔
-                </button>
-              </div>
-            `;
-          }
-        } else if (currentRole === 'production_floor') {
-          if (o.status === 'in_production') {
-            actionArea = `
-              <div class="grid grid-cols-2 gap-2 mt-2.5 pt-2 border-t border-slate-800">
-                <button onclick="sendToPackaging(${o.id})" class="py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold">
-                  تم الخلط ➔ للتعبئة
-                </button>
-                <button onclick="productionAddMissing(${o.id})" class="py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold">
-                  تسجيل نقص مواد 🛑
-                </button>
-              </div>
-            `;
-          }
-        } else if (currentRole === 'packaging_floor') {
-          if (o.status === 'in_packaging') {
-            actionArea = `
-              <div class="mt-2.5 pt-2 border-t border-slate-800">
-                <button onclick="completePackaging(${o.id})" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-950">
-                  إتمام التعبئة ومطابقة الوجهة والتاريخ ✓
-                </button>
-              </div>
-            `;
-          }
+        if (currentUserRole === 'commercial' && o.status === 'missing_materials') {
+          actionArea = `
+            <div class="mt-2.5 pt-2 border-t border-slate-800">
+              <button onclick="commercialResolveMissing(${o.id})" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-950 flex items-center justify-center gap-1.5">
+                <span>✓</span> تم شراء وتأمين كافة النواقص للمعمل
+              </button>
+            </div>
+          `;
+        } else if (currentUserRole === 'accountant' && o.status === 'with_accountant') {
+          actionArea = `
+            <div class="mt-2.5 pt-2 border-t border-slate-800">
+              <button onclick="accountantApprove(${o.id})" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold">
+                ✓ تدقيق واعتماد الطلبية وإرسالها لإدارة الإنتاج
+              </button>
+            </div>
+          `;
+        } else if (currentUserRole === 'supervisor' && o.status === 'with_supervisor') {
+          actionArea = `
+            <div class="mt-2.5 pt-2 border-t border-slate-800">
+              <button onclick="supervisorDispatch(${o.id})" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold">
+                إصدار أمر البدء وإرسال لصالة الإنتاج ➔
+              </button>
+            </div>
+          `;
+        } else if (currentUserRole === 'production_floor' && o.status === 'in_production') {
+          actionArea = `
+            <div class="grid grid-cols-2 gap-2 mt-2.5 pt-2 border-t border-slate-800">
+              <button onclick="sendToPackaging(${o.id})" class="py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold">
+                تم الخلط ➔ للتعبئة
+              </button>
+              <button onclick="productionAddMissing(${o.id})" class="py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold">
+                تسجيل نقص مواد 🛑
+              </button>
+            </div>
+          `;
+        } else if (currentUserRole === 'packaging_floor' && o.status === 'in_packaging') {
+          actionArea = `
+            <div class="mt-2.5 pt-2 border-t border-slate-800">
+              <button onclick="completePackaging(${o.id})" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-950">
+                إتمام التعبئة ومطابقة الوجهة والتاريخ ✓
+              </button>
+            </div>
+          `;
         }
 
         card.innerHTML = `
@@ -514,23 +547,21 @@
             </div>
             <div class="flex gap-1 items-center">
               <span class="text-[9px] px-2 py-0.5 rounded-full font-bold ${o.priority === 'مستعجل' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-slate-800 text-slate-400'}">${o.priority}</span>
-              <span class="text-[9px] px-2 py-0.5 rounded-full border ${statusConfig[o.status].color}">${statusConfig[o.status].label}</span>
+              <span class="text-[9px] px-2 py-0.5 rounded-full border ${displayStatusColor}">${displayStatusLabel}</span>
             </div>
           </div>
 
-          <!-- Items Box with specific per-item notes -->
           <div class="bg-slate-950/60 px-3 py-1.5 rounded-xl border border-slate-800/80 my-2">
             ${itemsHtml}
           </div>
 
-          ${missingHtml}
+          ${missingBoxHtml}
           ${notesHtml}
 
-          <!-- Global Note Button for All Roles -->
           <div class="flex justify-between items-center mt-2.5 pt-2 border-t border-slate-800/60 text-[10px]">
-            <span class="text-slate-400">آخر حالة: <span class="text-slate-300 font-medium">${o.log}</span></span>
-            <button onclick="addGeneralNote(${o.id})" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg border border-slate-700 font-bold transition flex items-center gap-1">
-              <span>💬</span> إضافة ملاحظة
+            <span class="text-slate-400">الحالة: <span class="text-slate-300 font-medium">${o.log}</span></span>
+            <button onclick="addGeneralNote(${o.id})" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg border border-slate-700 font-bold transition flex items-center gap-1">
+              <span>💬</span> ملاحظة
             </button>
           </div>
 
@@ -541,7 +572,8 @@
       });
     }
 
-    render();
+    // Initialize application check
+    checkAuth();
   </script>
 </body>
 </html>
